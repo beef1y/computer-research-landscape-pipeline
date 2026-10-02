@@ -1,0 +1,5 @@
+interface:
+  display_name: "Paper Research Chain"
+  short_description: "Extract Q, D, metrics, baselines, and conclusions"
+  default_prompt: "Use $paper-pdf-research-chain with a paper PDF or full-text source, falling back to the abstract when necessary, to extract venue/year, title, Q, Delta, paper-level D, metric definitions, baselines, ground truth, and metric-based conclusions."
+

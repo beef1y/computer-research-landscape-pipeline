@@ -1,0 +1,5 @@
+interface:
+  display_name: "Computer Research Landscape"
+  short_description: "Extract papers and aggregate their research methods"
+  default_prompt: "Use this skill to extract papers from PDFs or full-text links, fall back to abstracts when necessary, record each paper's Q and D, aggregate the extracted D descriptors across Q, and produce the Markdown, mindmap, and PPT outputs."
+

@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+analysis/*
+!analysis/.gitkeep
+paper-library/research-landscape-mindmap.html
+paper-library/data/merged-papers-*.csv

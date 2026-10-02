@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>论文研究链库</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">QΔ</div>
+      <div>
+        <h1>论文研究链库</h1>
+        <p>Q → Δ → metric → baseline → ground truth → 结论</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span id="totalCount" class="count-label">0 篇论文</span>
+      <a class="button button-secondary" href="data/merged-papers.csv" download>下载合并 CSV</a>
+      <button id="resetButton" class="button button-quiet" type="button">重置分类</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="groups-pane" aria-label="论文分组">
+      <div class="pane-heading">
+        <div>
+          <span class="eyebrow">分类工作区</span>
+          <h2>我的分组</h2>
+        </div>
+        <button id="newGroupButton" class="icon-button" type="button" aria-label="新建分组" data-tooltip="新建分组">+</button>
+      </div>
+      <p class="pane-note">把文章拖到分组或子分组。每个顶层分组最多包含一层子分组。</p>
+      <div id="groupDropZone" class="group-drop-zone">将分组拖到这里调整顺序</div>
+      <div id="groupsList" class="groups-list"></div>
+      <button id="unassignedViewButton" class="unassigned-summary" type="button">
+        <span>原表剩余</span>
+        <strong id="unassignedCount">0</strong>
+      </button>
+    </aside>
+
+    <div class="column-splitter" data-splitter="groups" role="separator" aria-label="调整分组栏宽度" tabindex="0"></div>
+
+    <section class="library-pane" aria-label="论文表格">
+      <div class="library-toolbar">
+        <div>
+          <span class="eyebrow" id="viewEyebrow">未分组论文</span>
+          <h2 id="viewTitle">按标题浏览</h2>
+        </div>
+        <div class="toolbar-controls">
+          <label class="search-field">
+            <span class="sr-only">搜索论文</span>
+            <input id="searchInput" type="search" placeholder="搜索标题、Q、venue…" autocomplete="off">
+          </label>
+          <button id="newSubgroupButton" class="button button-secondary" type="button" hidden>新建子分组</button>
+          <button id="titleSortButton" class="button button-secondary" type="button">按标题排序</button>
+        </div>
+      </div>
+      <div id="dropHint" class="drop-hint">拖拽行可调整顺序；拖到左侧分组即可归类</div>
+      <div class="table-wrap">
+        <table class="papers-table">
+          <colgroup id="papersColgroup">
+            <col data-column-index="0">
+            <col data-column-index="1">
+            <col data-column-index="2">
+            <col data-column-index="3">
+            <col data-column-index="4">
+            <col data-column-index="5">
+            <col data-column-index="6">
+            <col data-column-index="7">
+            <col data-column-index="8">
+            <col data-column-index="9">
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col"><span class="header-label">排序</span><span class="column-resizer" data-column-index="0" role="separator" aria-label="调整排序列宽"></span></th>
+              <th scope="col"><span class="header-label">发表地方/年份</span><span class="column-resizer" data-column-index="1" role="separator" aria-label="调整发表地方列宽"></span></th>
+              <th scope="col"><span class="header-label">论文标题</span><span class="column-resizer" data-column-index="2" role="separator" aria-label="调整论文标题列宽"></span></th>
+              <th scope="col"><span class="header-label">Q</span><span class="column-resizer" data-column-index="3" role="separator" aria-label="调整Q列宽"></span></th>
+              <th scope="col"><span class="header-label">Δ</span><span class="column-resizer" data-column-index="4" role="separator" aria-label="调整Delta列宽"></span></th>
+              <th scope="col"><span class="header-label">metric</span><span class="column-resizer" data-column-index="5" role="separator" aria-label="调整metric列宽"></span></th>
+              <th scope="col"><span class="header-label">baseline</span><span class="column-resizer" data-column-index="6" role="separator" aria-label="调整baseline列宽"></span></th>
+              <th scope="col"><span class="header-label">ground truth</span><span class="column-resizer" data-column-index="7" role="separator" aria-label="调整ground truth列宽"></span></th>
+              <th scope="col"><span class="header-label">结论</span><span class="column-resizer" data-column-index="8" role="separator" aria-label="调整结论列宽"></span></th>
+              <th scope="col"><span class="header-label">操作</span><span class="column-resizer" data-column-index="9" role="separator" aria-label="调整操作列宽"></span></th>
+            </tr>
+          </thead>
+          <tbody id="papersBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" hidden>
+          <strong>这里还没有文章</strong>
+          <span id="emptyMessage">新建分组后，把文章拖进来即可开始整理。</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="column-splitter" data-splitter="detail" role="separator" aria-label="调整详情栏宽度" tabindex="0"></div>
+
+    <aside class="detail-pane" aria-label="论文详情">
+      <div class="pane-heading detail-heading">
+        <div>
+          <span class="eyebrow">当前阅读</span>
+          <h2>论文详情</h2>
+        </div>
+        <button id="closeDetailButton" class="icon-button" type="button" aria-label="清除选择" data-tooltip="清除选择">×</button>
+      </div>
+      <div id="detailContent" class="detail-content">
+        <div class="detail-empty">
+          <span class="detail-empty-mark">↗</span>
+          <strong>选择一篇论文</strong>
+          <p>点击表格中的文章，查看完整的研究链内容。</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <dialog id="groupDialog" class="group-dialog">
+    <form id="groupForm" method="dialog">
+      <div class="dialog-heading">
+        <div>
+          <span class="eyebrow" id="dialogEyebrow">新建分类</span>
+          <h2 id="dialogTitle">创建分组</h2>
+        </div>
+        <button id="cancelDialogButton" class="icon-button" type="button" aria-label="关闭对话框">×</button>
+      </div>
+      <label class="form-label" for="groupNameInput">分组名称</label>
+      <input id="groupNameInput" class="form-control" type="text" maxlength="48" required placeholder="例如：汽车隐私方法">
+      <label class="form-label" for="groupDescriptionInput">分组说明</label>
+      <textarea id="groupDescriptionInput" class="form-control" rows="4" maxlength="180" placeholder="说明这个分组用于收集什么文章"></textarea>
+      <input id="editingGroupId" type="hidden">
+      <input id="parentGroupId" type="hidden">
+      <div class="dialog-actions">
+        <button id="cancelDialogAction" class="button button-secondary" type="button">取消</button>
+        <button class="button button-primary" type="submit">保存分组</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js?v=20260827a" defer></script>
+</body>
+</html>
